@@ -934,27 +934,10 @@ function buildHtml(results, smpBase64) {
   const htmlContent = buildHtml(results, smpBase64);
   fs.writeFileSync(OUTPUT_FILE, htmlContent, 'utf-8');
 
-  // PDF 생성 (HTML 파일을 브라우저로 열어 PDF로 저장)
-  const PDF_FILE = OUTPUT_FILE.replace('.html', '.pdf');
-  console.log('\n  -> PDF 생성 중...');
-  await page.goto(`file:///${OUTPUT_FILE.replace(/\\/g, '/')}`, {
-    waitUntil: 'networkidle', timeout: 15000,
-  });
-  await page.waitForTimeout(1500); // 폰트·이미지 렌더링 대기
-  await page.pdf({
-    path: PDF_FILE,
-    format: 'A4',
-    landscape: true,         // 가로 방향 출력
-    printBackground: true,   // 배경색·그라디언트 포함
-    margin: { top: '16mm', bottom: '16mm', left: '12mm', right: '12mm' },
-  });
-  console.log(`  ✅ PDF 저장됨: ${PDF_FILE}`);
-
   await browser.close();
 
   console.log(`\n✅ 완료`);
   console.log(`   📄 HTML: ${OUTPUT_FILE}`);
-  console.log(`   🖨️  PDF : ${PDF_FILE}`);
   Object.entries(results).forEach(([id,r]) =>
     console.log(`   ${SITE_META[id].emoji} ${SITE_META[id].name}: ${r.items.length}건 (날짜: ${r.items.filter(i=>i.date).length}건)`)
   );
