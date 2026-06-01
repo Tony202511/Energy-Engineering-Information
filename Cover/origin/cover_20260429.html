@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>표지 - 에너지부문 설계종합정보</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1100px; height: 800px; overflow: hidden; }
+    .cover {
+      width: 1100px; height: 620px;
+      background: #07142e;
+      position: relative;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+    .grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 55px 55px;
+    }
+    .accent-bar {
+      position: absolute;
+      top: 0; left: -80px;
+      height: 800px;
+      background: linear-gradient(160deg, #0d2460 0%, #0a1a42 60%, transparent 100%);
+    }
+    .circuit-svg {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .top-stripe {
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #1e6ee8 0%, #00c8ff 40%, #1e6ee8 70%, transparent 100%);
+    }
+    .bottom-stripe {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, #1e6ee8 30%, #00c8ff 60%, transparent);
+    }
+    .content {
+      position: absolute; top: 0; left: 0;
+      width: 1100px; height: 800px;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 60px 120px 60px 88px;
+    }
+    .eyebrow {
+      font-size: 18px; font-weight: 900; letter-spacing: 0.22em;
+      color: #fff; text-transform: uppercase; margin-bottom: 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .title-en {
+      font-family: 'Noto Serif KR', serif; font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.1em; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 52px; font-weight: 900; line-height: 1.18;
+      color: #fff; margin-bottom: 6px; letter-spacing: -0.01em;
+    }
+    h1 .highlight { color: #4fb4ff; }
+    .subtitle-line {
+      margin-top: 18px; font-size: 12.5px; font-weight: 300;
+      color: rgba(255,255,255,0.42); line-height: 2.0; max-width: 590px;
+    }
+    .subtitle-line span {
+      display: inline-block;
+      border-right: 1px solid rgba(255,255,255,0.16);
+      padding-right: 9px; margin-right: 9px;
+    }
+    .subtitle-line span:last-child { border-right: none; }
+    .divider {
+      margin: 36px 0; width: 100px; height: 2px;
+      background: linear-gradient(90deg, #1e6ee8, #00c8ff);
+    }
+    .meta-row { display: flex; align-items: flex-end; gap: 40px; }
+    .meta-item { display: flex; flex-direction: column; gap: 5px; }
+    .meta-label {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); font-weight: 400;
+    }
+    .meta-value.date { font-size: 22px; color: #fff; font-weight: 700; }
+    .glow-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(70px); pointer-events: none;
+    }
+    .orb-1 { width: 400px; height: 400px; background: rgba(30,110,232,0.14); top: -80px; left: -60px; }
+    .orb-2 { width: 280px; height: 280px; background: rgba(0,200,255,0.07); bottom: 60px; left: 380px; }
+    .edition-badge {
+      position: absolute; bottom: 34px; left: 72px;
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.18); font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+<script>
+  /* ====================================================
+     ▼ 여기서 값을 직접 수정하세요
+     ==================================================== */
+  const VARS = {
+    boltX:        800,  // 번개 X 위치 (px, 오른쪽으로 갈수록 증가)
+    boltY:        290,  // 번개 Y 위치 (px, 아래로 갈수록 증가)
+
+    accentWidth:  750,  // 사선 배경 너비 (px)
+    accentTop:     85,  // 사선 상단 꼭짓점 위치 (%, 클수록 오른쪽)
+  };
+  /* ==================================================== */
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 사선 배경
+    const bar = document.getElementById('accent-bar');
+    bar.style.width = VARS.accentWidth + 'px';
+    bar.style.clipPath = `polygon(0 0, ${VARS.accentTop}% 0, 100% 100%, 0% 100%)`;
+
+    // 번개 (원점 기준 offset 적용)
+    const dx = VARS.boltX - 670;
+    const dy = VARS.boltY - 290;
+    const origin = [[670,290],[650,380],[668,380],[648,470],[688,360],[668,360],[690,290]];
+    const pts = origin.map(([x,y]) => (x+dx) + ',' + (y+dy)).join(' ');
+    document.querySelectorAll('.bolt-poly').forEach(el => el.setAttribute('points', pts));
+  });
+</script>
+
+<div class="cover">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="grid-bg"></div>
+  <div class="accent-bar" id="accent-bar"></div>
+  <div class="top-stripe"></div>
+  <div class="bottom-stripe"></div>
+
+  <svg class="circuit-svg" viewBox="0 0 1100 800" xmlns="http://www.w3.org/2000/svg">
+    
+    <polygon class="bolt-poly" points="670,290 650,380 668,380 648,470 688,360 668,360 690,290"
+             fill="rgba(220,50,50,0.18)" stroke="rgba(255,80,80,0.35)" stroke-width="0.8"/>
+    <polygon class="bolt-poly" points="670,290 650,380 668,380 648,470 688,360 668,360 690,290"
+             fill="url(#boltGlow)" opacity="0.6"/>
+    <defs>
+      <radialGradient id="boltGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(255,100,100,0.4)"/>
+        <stop offset="100%" stop-color="rgba(180,30,30,0)"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <div class="content">
+    <div class="eyebrow">ENERGY! ENERGY! SMART!</div><br/><br/><br/>
+    <div class="title-en">ENERGY SECTOR · DESIGN & REGULATORY</div>
+    <h1>에너지부문   <span class="highlight">설계종합</span><span class="highlight">정보</span></h1>
+    <div class="subtitle-line">
+      <span>국가법령정보센터</span><span>국가건설기준센터</span><span>한국건설기술연구원</span><span>조달청</span><span>기후에너지환경부</span><br/>
+      <span>한국에너지공단</span><span>한국환경공단</span><span>전기위원회</span><span>한국풍력산업협회</span><span>전력거래소</span>
+    </div><br/>
+    <div class="divider"></div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">발행일</span>
+        <span class="meta-value date">2026년 4월 29일 (수)</span>
+      </div>
+    </div><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+  </div>
+
+  <div class="edition-badge">자동 생성 뉴스레터 · 에너지부문 설계종합정보 시스템</div>
+</div>
+</body>
+</html>
